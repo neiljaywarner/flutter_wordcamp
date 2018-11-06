@@ -22,7 +22,8 @@ class MyHome extends StatefulWidget {
 
 class MyHomeState extends State<MyHome> {
   // Base URL for your wordpress site
-  final String Url = "https://2018.kanpur.wordcamp.org/";
+  final String Url = "http://blacktaxandwhitebenefits.com/wp-json/wp/v2";
+  //http://blacktaxandwhitebenefits.com/wp-json/wp/v2/posts?_embed
 
   //api
   final String api = "wp-json/wp/v2/";
