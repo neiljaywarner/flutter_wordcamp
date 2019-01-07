@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_wordcamp/article_page.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
@@ -6,6 +7,7 @@ import 'package:transparent_image/transparent_image.dart';
 import 'package:flutter_html_view/flutter_html_view.dart';
 
 void main() {
+
   runApp(new MaterialApp(
       home: new MyHome(),
       debugShowCheckedModeBanner: false,
@@ -29,8 +31,6 @@ class MyHomeState extends State<MyHome> {
   //appTitle
   final String appTitle = "Black tax and White Benefits";
   List posts;
-
-  int _selectedIndex = -1;
 
   // Function to fetch list of posts
   Future<String> getPosts() async {
@@ -61,49 +61,22 @@ class MyHomeState extends State<MyHome> {
     return Scaffold(
       appBar: AppBar(
           title: Text(appTitle),
-          backgroundColor: Colors.redAccent,
-          actions: <Widget>[
-            IconButton(
-                icon: new Icon(Icons.list),
-                onPressed: () {
-                  // TOOD: Share <selectedindex> article link
-                  setState(() {
-                    _selectedIndex = -1;
-                  });
-                }
-            ),
-            IconButton(
-              icon: new Icon(Icons.share),
-              onPressed: () {
-                // TOOD: Share <selectedindex> article link
-                print("Sharing");
-              }
-            ),
-          ]),
+          backgroundColor: Colors.redAccent),
       body: ListView.builder(
         itemCount: posts == null ? 0 : posts.length,
         itemBuilder: (BuildContext context, int index) {
-          var _content = "";
-          if (index == _selectedIndex) {
-            _content = posts[index]["content"]["rendered"];
-          } else {
-            if (_selectedIndex != -1) {
-              return null;
-            } else {
-              _content = posts[index]["excerpt"]["rendered"];
-            }
-          }
+          final _content = posts[index]["excerpt"]["rendered"];
 
           return Column(
             children: <Widget>[
               InkWell(
                 onTap: () {
-                  Scaffold.of(context).showSnackBar(SnackBar(
-                    content: Text('Tapped $index'),
-                  ));
-                  setState(() {
-                    _selectedIndex = index;
-                  });
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => DetailScreen(post: posts[index]),
+                    ),
+                  );
                 },
                 child: Card(
                   child: Column(
