@@ -5,6 +5,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:transparent_image/transparent_image.dart';
 import 'package:flutter_html_view/flutter_html_view.dart';
+import 'package:html_unescape/html_unescape.dart';
 
 void main() {
 
@@ -65,8 +66,11 @@ class MyHomeState extends State<MyHome> {
       body: ListView.builder(
         itemCount: posts == null ? 0 : posts.length,
         itemBuilder: (BuildContext context, int index) {
-          final _content = posts[index]["excerpt"]["rendered"];
-
+          final unescape = new HtmlUnescape();
+          var _content = posts[index]["excerpt"]["rendered"];
+          _content = unescape.convert(_content);
+          var title = posts[index]["title"]["rendered"];
+          title = unescape.convert(title);
           return Column(
             children: <Widget>[
               InkWell(
@@ -88,9 +92,7 @@ class MyHomeState extends State<MyHome> {
                       ),
                       new Padding(
                           padding: EdgeInsets.all(8.0),
-                          child: new Text(
-                            posts[index]["title"]["rendered"],
-                            // textAlign: TextAlign.justify,
+                          child: new Text(title,
                             style: new TextStyle(
                                 fontSize: 16.0, fontWeight: FontWeight.bold),
                           )),
