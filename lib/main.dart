@@ -63,19 +63,21 @@ class MyHomeState extends State<MyHome> {
           title: Text(appTitle),
           backgroundColor: Colors.redAccent,
           actions: <Widget>[
-            new IconButton(
-              // action button
-              icon: new Icon(Icons.directions_car),
-              onPressed: () {
-                print("direction");
-              },
+            IconButton(
+                icon: new Icon(Icons.list),
+                onPressed: () {
+                  // TOOD: Share <selectedindex> article link
+                  setState(() {
+                    _selectedIndex = -1;
+                  });
+                }
             ),
-            new IconButton(
-              // action button
-              icon: new Icon(Icons.add_alert),
+            IconButton(
+              icon: new Icon(Icons.share),
               onPressed: () {
-                print("updates coming...");
-              },
+                // TOOD: Share <selectedindex> article link
+                print("Sharing");
+              }
             ),
           ]),
       body: ListView.builder(
@@ -85,8 +87,13 @@ class MyHomeState extends State<MyHome> {
           if (index == _selectedIndex) {
             _content = posts[index]["content"]["rendered"];
           } else {
-            _content = posts[index]["excerpt"]["rendered"];
+            if (_selectedIndex != -1) {
+              return null;
+            } else {
+              _content = posts[index]["excerpt"]["rendered"];
+            }
           }
+
           return Column(
             children: <Widget>[
               InkWell(
@@ -94,6 +101,9 @@ class MyHomeState extends State<MyHome> {
                   Scaffold.of(context).showSnackBar(SnackBar(
                     content: Text('Tapped $index'),
                   ));
+                  setState(() {
+                    _selectedIndex = index;
+                  });
                 },
                 child: Card(
                   child: Column(
