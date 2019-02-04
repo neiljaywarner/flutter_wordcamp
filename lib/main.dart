@@ -8,7 +8,6 @@ import 'package:flutter_html_view/flutter_html_view.dart';
 import 'package:html_unescape/html_unescape.dart';
 
 void main() {
-
   runApp(new MaterialApp(
       home: new MyHome(),
       debugShowCheckedModeBanner: false,
@@ -54,60 +53,70 @@ class MyHomeState extends State<MyHome> {
     this.getPosts();
   }
 
-  //TODO: See if codemagic by nevercode can help me a lot to deploy
-  // with testflight
-  // and play store.
+  // TODO: future builder and error dialog
+  @override
+  Widget build(BuildContext context) => Scaffold(
+        appBar:
+            AppBar(title: Text(appTitle), backgroundColor: Colors.redAccent),
+        body: posts == null ? Center(child: CircularProgressIndicator()) :  ListViewBuilder(posts: posts),
+      );
+}
+
+class ListViewBuilder extends StatelessWidget {
+  const ListViewBuilder({
+    Key key,
+    @required this.posts,
+  }) : super(key: key);
+
+  final List posts;
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-          title: Text(appTitle),
-          backgroundColor: Colors.redAccent),
-      body: ListView.builder(
-        itemCount: posts == null ? 0 : posts.length,
-        itemBuilder: (BuildContext context, int index) {
-          final unescape = new HtmlUnescape();
-          var _content = posts[index]["excerpt"]["rendered"];
-          _content = unescape.convert(_content);
-          var title = posts[index]["title"]["rendered"];
-          title = unescape.convert(title);
-          return Column(
-            children: <Widget>[
-              InkWell(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => DetailScreen(post: posts[index]),
-                    ),
-                  );
-                },
-                child: Card(
-                  child: Column(
-                    children: <Widget>[
-                      FadeInImage.memoryNetwork(
-                        placeholder: kTransparentImage,
-                        image: (posts[index]["_embedded"]["wp:featuredmedia"][0]
-                            ["source_url"]),
-                      ),
-                      new Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: new Text(title,
-                            style: new TextStyle(
-                                fontSize: 16.0, fontWeight: FontWeight.bold),
-                          )),
-                      new Padding(
-                        padding: EdgeInsets.all(4.0),
-                        child: new HtmlView(data: _content),
-                      ),
-                    ],
+    return ListView.builder(
+      itemCount: posts == null ? 0 : posts.length,
+      itemBuilder: (BuildContext context, int index) {
+        final unescape = new HtmlUnescape();
+        var _content = posts[index]["excerpt"]["rendered"];
+        _content = unescape.convert(_content);
+        var title = posts[index]["title"]["rendered"];
+        title = unescape.convert(title);
+        return Column(
+          children: <Widget>[
+            InkWell(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => DetailScreen(post: posts[index]),
                   ),
+                );
+              },
+              child: Card(
+                child: Column(
+                  children: <Widget>[
+                    FadeInImage.memoryNetwork(
+                      placeholder: kTransparentImage,
+                      image: (posts[index]["_embedded"]["wp:featuredmedia"]
+                          [0]["source_url"]),
+                    ),
+                    new Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: new Text(
+                          title,
+                          style: new TextStyle(
+                              fontSize: 16.0, fontWeight: FontWeight.bold),
+                        )),
+                    new Padding(
+                      padding: EdgeInsets.all(4.0),
+                      child: new HtmlView(data: _content),
+                    ),
+                  ],
                 ),
               ),
-            ],
-          );
-        },
-      ),
+            ),
+          ],
+        );
+      },
     );
   }
 }
