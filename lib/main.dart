@@ -94,11 +94,7 @@ class ListViewBuilder extends StatelessWidget {
               child: Card(
                 child: Column(
                   children: <Widget>[
-                    FadeInImage.memoryNetwork(
-                      placeholder: kTransparentImage,
-                      image: (posts[index]["_embedded"]["wp:featuredmedia"]
-                          [0]["source_url"]),
-                    ),
+                    buildFadeInImage(posts[index]),
                     new Padding(
                         padding: EdgeInsets.all(8.0),
                         child: new Text(
@@ -119,4 +115,24 @@ class ListViewBuilder extends StatelessWidget {
       },
     );
   }
+
+
+}
+
+//TODO use generator to get post podo from
+// http://blacktaxandwhitebenefits.com/wp-json/wp/v2/posts?_embed
+Widget buildFadeInImage(dynamic post) {
+  var featuredmedia = post["_embedded"]["wp:featuredmedia"];
+  if (post["featured_media"]==0) {
+    print("No pictures in this post...");
+  }
+  if (featuredmedia == null) {
+    return Container();
+  }
+
+  return FadeInImage.memoryNetwork(
+    placeholder: kTransparentImage,
+    image: (post["_embedded"]["wp:featuredmedia"]
+    [0]["source_url"]),
+  );
 }

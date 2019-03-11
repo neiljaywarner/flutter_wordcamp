@@ -1,3 +1,4 @@
+import 'package:blacktax_white_benefits/main.dart';
 import 'package:flutter/material.dart';
 import 'package:transparent_image/transparent_image.dart';
 import 'package:flutter_html_view/flutter_html_view.dart';
@@ -35,11 +36,7 @@ class DetailScreen extends StatelessWidget {
           Card(
             child: Column(
               children: <Widget>[
-                FadeInImage.memoryNetwork(
-                  placeholder: kTransparentImage,
-                  image: (post["_embedded"]["wp:featuredmedia"][0]
-                      ["source_url"]),
-                ),
+                buildFadeInImage(post),
                 new Padding(
                     padding: EdgeInsets.all(8.0),
                     child: new Text(
