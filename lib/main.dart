@@ -8,12 +8,9 @@ import 'package:flutter_html_view/flutter_html_view.dart';
 import 'package:html_unescape/html_unescape.dart';
 
 void main() {
-  runApp(new MaterialApp(
-      home: new MyHome(),
-      debugShowCheckedModeBanner: false,
-      theme: new ThemeData(
-        primarySwatch: Colors.green,
-      )));
+  runApp(MaterialApp(
+      home: MyHome(),
+      theme: ThemeData(primarySwatch: Colors.green)));
 }
 
 class MyHome extends StatefulWidget {
@@ -28,7 +25,6 @@ class MyHomeState extends State<MyHome> {
   final String postsRoute = "wp-json/wp/v2/";
   // e.g.   //http://blacktaxandwhitebenefits.com/wp-json/wp/v2/posts?_embed
 
-  //appTitle
   final String appTitle = "Black tax and White Benefits";
   List posts;
 
@@ -56,17 +52,13 @@ class MyHomeState extends State<MyHome> {
   // TODO: future builder and error dialog
   @override
   Widget build(BuildContext context) => Scaffold(
-        appBar:
-            AppBar(title: Text(appTitle), backgroundColor: Colors.redAccent),
+        appBar: AppBar(title: Text(appTitle), backgroundColor: Colors.redAccent),
         body: posts == null ? Center(child: CircularProgressIndicator()) :  ListViewBuilder(posts: posts),
       );
 }
 
 class ListViewBuilder extends StatelessWidget {
-  const ListViewBuilder({
-    Key key,
-    @required this.posts,
-  }) : super(key: key);
+  const ListViewBuilder({Key key, @required this.posts}) : super(key: key);
 
   final List posts;
 
@@ -75,7 +67,7 @@ class ListViewBuilder extends StatelessWidget {
     return ListView.builder(
       itemCount: posts == null ? 0 : posts.length,
       itemBuilder: (BuildContext context, int index) {
-        final unescape = new HtmlUnescape();
+        final unescape = HtmlUnescape();
         var _content = posts[index]["excerpt"]["rendered"];
         _content = unescape.convert(_content);
         var title = posts[index]["title"]["rendered"];
@@ -84,28 +76,20 @@ class ListViewBuilder extends StatelessWidget {
           children: <Widget>[
             InkWell(
               onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => DetailScreen(post: posts[index]),
-                  ),
+                Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => DetailScreen(post: posts[index])),
                 );
               },
               child: Card(
                 child: Column(
                   children: <Widget>[
                     buildFadeInImage(posts[index]),
-                    new Padding(
+                    Padding(
                         padding: EdgeInsets.all(8.0),
-                        child: new Text(
-                          title,
-                          style: new TextStyle(
-                              fontSize: 16.0, fontWeight: FontWeight.bold),
-                        )),
-                    new Padding(
-                      padding: EdgeInsets.all(4.0),
-                      child: new HtmlView(data: _content),
+                        child: Text(title,
+                          style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold))
                     ),
+                    Padding(padding: EdgeInsets.all(4.0), child: HtmlView(data: _content)),
                   ],
                 ),
               ),
@@ -115,24 +99,22 @@ class ListViewBuilder extends StatelessWidget {
       },
     );
   }
-
-
+  
 }
 
 //TODO use generator to get post podo from
 // http://blacktaxandwhitebenefits.com/wp-json/wp/v2/posts?_embed
 Widget buildFadeInImage(dynamic post) {
-  var featuredmedia = post["_embedded"]["wp:featuredmedia"];
+  var featuredMedia = post["_embedded"]["wp:featuredmedia"];
   if (post["featured_media"]==0) {
     print("No pictures in this post...");
   }
-  if (featuredmedia == null) {
+  if (featuredMedia == null) {
     return Container();
   }
 
   return FadeInImage.memoryNetwork(
     placeholder: kTransparentImage,
-    image: (post["_embedded"]["wp:featuredmedia"]
-    [0]["source_url"]),
+    image: (post["_embedded"]["wp:featuredmedia"] [0]["source_url"]),
   );
 }
